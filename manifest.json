@@ -1,6 +1,6 @@
 {
 	"name": "Progressive Web App",
-	"short_name": "SUPER APP",
+	"short_name": "HARI KESARI",
 	"description": "Demo for progressive web app with push notifications, background sync etc.",
 	"start_url": "./index.html?utm=homescreen",
 	"display": "standalone",
