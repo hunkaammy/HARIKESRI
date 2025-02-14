@@ -4,12 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Button Links</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .custom-button {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 250px;
+            text-align: center;
+        }
+
+        .custom-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
 
-    <button onclick="openURL('https://brokragecloud.web.app/ASHISH/BROKRAGECP/pending.html')">PENDING REPORT CP</button>
-    <button onclick="openURL('https://brokragecloud.web.app/ASHISH/BROKRAGECP/sellerledger.html')">SELLER LEDGER CP</button>
-    <button onclick="openURL('https://www.g')">DEPO</button>
+    <div class="button-container">
+        <button class="custom-button" onclick="openURL('https://brokragecloud.web.app/ASHISH/BROKRAGECP/pending.html')">PENDING REPORT CP</button>
+        <button class="custom-button" onclick="openURL('https://brokragecloud.web.app/ASHISH/BROKRAGECP/sellerledger.html')">SELLER LEDGER CP</button>
+        <button class="custom-button" onclick="openURL('https://www.g')">DEPO</button>
+    </div>
 
     <script>
         function openURL(url) {
