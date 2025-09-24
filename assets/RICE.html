@@ -89,7 +89,7 @@
     
     <p>FRIGHT: <input type="number" ng-model="FRIGHT" placeholder="Enter fright here"></p>
     
-    <p>TAX (%): <input type="number" ng-model="TAX" ng-init="TAX = 5" placeholder="Enter tax percentage here"></p>
+    <p>TAX (%): <input type="number" ng-model="TAX" ng-init="TAX = 0" placeholder="Enter tax percentage here"></p>
 
     <h2>Price after Tax: {{ priceaftertax = (PRICE || 0) + (FRIGHT || 0) + (((PRICE || 0) + (FRIGHT || 0)) * (TAX || 0) / 100) | number:2 }}</h2>
 
