@@ -87,7 +87,7 @@
     
     <p>PRICE: <input type="number" ng-model="PRICE" placeholder="Enter price here"></p>
     
-    <p>FRIGHT: <input type="number" ng-model="FREIGHT" placeholder="Enter fright here"></p>
+    <p>FREIGHT: <input type="number" ng-model="FREIGHT" placeholder="Enter fright here"></p>
     
     <p>TAX (%): <input type="number" ng-model="TAX" ng-init="TAX = 0" placeholder="Enter tax percentage here"></p>
 
@@ -199,6 +199,16 @@
                 <td>
                     <span ng-if="(finalPrice6000 = ((priceaftertax || 0) / 1000 * (cost750gm || 0) + (margin750gm || 0)).toFixed(2)) != 100">
                         {{ finalPrice6000 }}
+                    </span>
+                </td>
+            </tr>
+				<tr>
+                <td>POUCH - 700 GM</td>
+                <input type="hidden" ng-model="margin700gm" ng-init="margin700gm = 6">
+                <input type="hidden" ng-model="cost700gm" ng-init="cost700gm = 700">
+                <td>
+                    <span ng-if="(finalPrice60010 = ((priceaftertax || 0) / 1000 * (cost700gm || 0) + (margin700gm || 0)).toFixed(2)) != 100">
+                        {{ finalPrice60010 }}
                     </span>
                 </td>
             </tr>
