@@ -202,6 +202,16 @@
                     </span>
                 </td>
             </tr>
+			<tr>
+                <td>POUCH - 700 GM</td>
+                <input type="hidden" ng-model="margin700gm" ng-init="margin700gm = 6">
+                <input type="hidden" ng-model="cost700gm" ng-init="cost700gm = 700">
+                <td>
+                    <span ng-if="(finalPrice60010 = ((priceaftertax || 0) / 1000 * (cost700gm || 0) + (margin700gm || 0)).toFixed(2)) != 100">
+                        {{ finalPrice60010 }}
+                    </span>
+                </td>
+            </tr>
         </tbody>
     </table>
 
