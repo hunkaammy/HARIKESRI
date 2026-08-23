@@ -18,7 +18,7 @@
             color: #333;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto; 
             padding: 20px;
             background: white; 
@@ -95,7 +95,12 @@
         {{ priceaftertax = ((PRICE || 0) + (FRIGHT || 0)) * (1 + ((TAX || 0) / 100)) }}
     </span>
 
+    <span ng-init="priceunsettax = 0" style="display:none;">
+        {{ priceunsettax = (PRICE || 0) + (FRIGHT || 0) }}
+    </span>
+
     <h2>Price after Tax: {{ priceaftertax | number:2 }}</h2>
+    <h2>Price without Tax: {{ priceunsettax | number:2 }}</h2>
 
     <button id="shareButton" onclick="shareTable()">Share on WhatsApp</button>
 
@@ -105,7 +110,8 @@
         <thead>
             <tr>
                 <th>Item</th>
-                <th>Final Price</th>
+                <th>SOYA</th>
+                <th>RICE</th>
             </tr>
         </thead>
         <tbody>
@@ -118,6 +124,11 @@
                         {{ finalPrice }}
                     </span>
                 </td>
+                <td>
+                    <span ng-if="(finalPriceNoTax = ((priceunsettax || 0) * (margin15kgtin || 0) + (cost15kgtin || 0)).toFixed(2)) != 100">
+                        {{ finalPriceNoTax }}
+                    </span>
+                </td>
             </tr>
             <tr>
                 <td>15 LTR</td>
@@ -126,6 +137,11 @@
                 <td>
                     <span ng-if="(finalPrice1 = ((priceaftertax || 0) * (margin15ltrtin || 0) + (cost15ltrtin || 0)).toFixed(2)) != 100">
                         {{ finalPrice1 }}
+                    </span>
+                </td>
+                <td>
+                    <span ng-if="(finalPrice1NoTax = ((priceunsettax || 0) * (margin15ltrtin || 0) + (cost15ltrtin || 0)).toFixed(2)) != 100">
+                        {{ finalPrice1NoTax }}
                     </span>
                 </td>
             </tr>
@@ -138,7 +154,8 @@
         <thead>
             <tr>
                 <th>Item</th>
-                <th>Final Price</th>
+                <th>SOYA</th>
+                <th>RICE</th>
             </tr>
         </thead>
         <tbody>
@@ -151,12 +168,22 @@
                         {{ finalPrice999 }}
                     </span>
                 </td>
+                <td>
+                    <span ng-if="(finalPrice999NoTax = ((priceunsettax || 0) / 1000 * (cost910gm || 0) + (margin910gm || 0)).toFixed(2)) != 100">
+                        {{ finalPrice999NoTax }}
+                    </span>
+                </td>
             </tr>
             <tr>
                 <td>POUCH - 500 ML</td>
                 <td>
                     <span ng-if="finalPrice999">
                         {{ (((finalPrice999 * 1) + 2) / 2).toFixed(2) }}
+                    </span>
+                </td>
+                <td>
+                    <span ng-if="finalPrice999NoTax">
+                        {{ (((finalPrice999NoTax * 1) + 2) / 2).toFixed(2) }}
                     </span>
                 </td>
             </tr>
@@ -169,7 +196,8 @@
         <thead>
             <tr>
                 <th>Item</th>
-                <th>Final Price</th>
+                <th>SOYA</th>
+                <th>RICE</th>
             </tr>
         </thead>
         <tbody>
@@ -182,12 +210,22 @@
                         {{ finalPrice3 }}
                     </span>
                 </td>
+                <td>
+                    <span ng-if="(finalPrice3NoTax = ((priceunsettax || 0) / 1000 * (cost910gm || 0) + 6.10 + (margin910gm || 0)).toFixed(2)) != 100">
+                        {{ finalPrice3NoTax }}
+                    </span>
+                </td>
             </tr>
             <tr>
                 <td>BOTTLE - 500 ML</td>
                 <td>
                     <span ng-if="finalPrice3">
                         {{ ((finalPrice3 * 1) + 3).toFixed(2) }}
+                    </span>
+                </td>
+                <td>
+                    <span ng-if="finalPrice3NoTax">
+                        {{ ((finalPrice3NoTax * 1) + 3).toFixed(2) }}
                     </span>
                 </td>
             </tr>
@@ -200,27 +238,34 @@
         <thead>
             <tr>
                 <th>Item</th>
-                <th>Final Price</th>
+                <th>SOYA</th>
+                <th>RICE</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>JAR - 5 LTR</td>
-                <input type="hidden" ng-model="margin4_5kgJar" ng-init="margin4_5kgJar = 14.00">
-                <input type="hidden" ng-model="cost4_5kgJar" ng-init="cost4_5kgJar = 100">
                 <td>
-                    <span ng-if="(finalPrice6 = (((priceaftertax || 0) / 1000) * (cost990ml || 0) + (margin990ml || 0)).toFixed(2)) != 100">
-                        {{ (finalPrice311 * 5 + 25) | number:2 }}
+                    <span ng-if="finalPrice3">
+                        {{ (finalPrice3 * 5 + 25) | number:2 }}
+                    </span>
+                </td>
+                <td>
+                    <span ng-if="finalPrice3NoTax">
+                        {{ (finalPrice3NoTax * 5 + 25) | number:2 }}
                     </span>
                 </td>
             </tr>
             <tr>
                 <td>JAR - 4 KG</td>
-                <input type="hidden" ng-model="margin4_2kgJar" ng-init="margin4_2kgJar = 13.00">
-                <input type="hidden" ng-model="cost4_2kgJar" ng-init="cost4_2kgJar = 100">
                 <td>
-                    <span ng-if="(finalPrice4 = ((priceaftertax || 0) / 1000 * (cost840gm || 0) + (margin840gm || 0)).toFixed(2)) != 100">
+                    <span ng-if="finalPrice4">
                         {{ (finalPrice4 * 5 + 25) | number:2 }}
+                    </span>
+                </td>
+                <td>
+                    <span ng-if="finalPrice4NoTax">
+                        {{ (finalPrice4NoTax * 5 + 25) | number:2 }}
                     </span>
                 </td>
             </tr>
@@ -239,8 +284,9 @@
         bulkItems.forEach(item => {
             const columns = item.querySelectorAll('td');
             const itemName = columns[0].innerText;
-            const itemPrice = columns[1].innerText.trim();
-            message += `${itemName}: ${itemPrice}\n`;
+            const soyaPrice = columns[1].innerText.trim();
+            const ricePrice = columns[2].innerText.trim();
+            message += `${itemName} -> SOYA: ${soyaPrice} | RICE: ${ricePrice}\n`;
         });
 
         message += '\n*HK POUCH*:\n';
@@ -248,8 +294,9 @@
         pouchItems.forEach(item => {
             const columns = item.querySelectorAll('td');
             const itemName = columns[0].innerText;
-            const itemPrice = columns[1].innerText.trim();
-            message += `${itemName}: ${itemPrice}\n`;
+            const soyaPrice = columns[1].innerText.trim();
+            const ricePrice = columns[2].innerText.trim();
+            message += `${itemName} -> SOYA: ${soyaPrice} | RICE: ${ricePrice}\n`;
         });
 
         message += '\n*HK BOTTLE*:\n';
@@ -257,8 +304,9 @@
         bottleItems.forEach(item => {
             const columns = item.querySelectorAll('td');
             const itemName = columns[0].innerText;
-            const itemPrice = columns[1].innerText.trim();
-            message += `${itemName}: ${itemPrice}\n`;
+            const soyaPrice = columns[1].innerText.trim();
+            const ricePrice = columns[2].innerText.trim();
+            message += `${itemName} -> SOYA: ${soyaPrice} | RICE: ${ricePrice}\n`;
         });
 
         message += '\n*HK JAR Items*:\n';
@@ -266,8 +314,9 @@
         jarItems.forEach(item => {
             const columns = item.querySelectorAll('td');
             const itemName = columns[0].innerText;
-            const itemPrice = columns[1].innerText.trim();
-            message += `${itemName}: ${itemPrice}\n`;
+            const soyaPrice = columns[1].innerText.trim();
+            const ricePrice = columns[2].innerText.trim();
+            message += `${itemName} -> SOYA: ${soyaPrice} | RICE: ${ricePrice}\n`;
         });
 
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
