@@ -3,324 +3,431 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Calculator</title>
+    <title>Price Calculator - Shri Shyam Oils</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <!-- html2canvas for converting the formatted card to image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
             margin: 0; 
             padding: 20px;
         }
-        h2 {
-            text-align: center;  
-            margin: 20px 0;
-            color: #333;
-        }
         .container {
-            max-width: 900px;
+            max-width: 720px;
             margin: 0 auto; 
+            background: #ffffff; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        .input-panel {
             padding: 20px;
-            background: white; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background-color: #f9fbfb;
+            border-bottom: 2px solid #e2e8f0;
         }
-        p {
-            font-size: 18px;
-            color: #555;
+        .input-group {
+            margin-bottom: 12px;
         }
-        input[type="number"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-top: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus {
+            border-color: #2b6cb0;
+        }
+        .summary-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ebf8ff;
+            padding: 12px 20px;
+            border-bottom: 1px solid #bee3f8;
+            font-weight: 600;
+            font-size: 14px;
+            color: #2b6cb0;
+        }
+        .actions {
+            padding: 15px 20px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            background: #fff;
+        }
+        .btn-share {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #25D366; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px;
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 15px; 
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(37, 211, 102, 0.3);
+            transition: background 0.2s;
+        }
+        .btn-share:hover {
+            background-color: #1eb956; 
+        }
+
+        /* --- STYLED RATE CARD AREA (CONVERTED TO IMAGE) --- */
+        #rateCard {
+            padding: 24px;
+            background: #ffffff;
+        }
+        .card-header {
+            text-align: center;
+            border-bottom: 2px solid #1a365d;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .card-header h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #1a365d;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+        .card-header .subtitle {
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .category-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 14px 0 6px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-left: 3px solid #2b6cb0;
+            padding-left: 8px;
         }
         table {
             width: 100%;  
             border-collapse: collapse;
-            margin: 20px 0; 
+            margin-bottom: 10px;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
             text-align: left;
+            font-size: 13px;
         }
         th {
-            background-color: #4CAF50; 
-            color: white;
+            background-color: #2b6cb0; 
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        th.price-col, td.price-col {
+            text-align: right;
+            width: 25%;
+        }
+        td.price-col {
+            font-weight: 600;
+            color: #1a202c;
         }
         tr:nth-child(even) {
-            background-color: #f2f2f2; 
+            background-color: #f8fafc; 
         }
-        tr:hover {
-            background-color: #ddd; 
-        }
-        #shareButton {
-            display: block; 
-            margin: 20px auto; 
-            padding: 10px 20px; 
-            background-color: #25D366; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 18px; 
-            transition: background-color 0.3s ease;
-        }
-        #shareButton:hover {
-            background-color: #1db764; 
-        }
-        .footer {
+        .card-footer {
+            margin-top: 15px;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 10px;
+            font-size: 11px;
+            color: #a0aec0;
             text-align: center;
-            margin-top: 30px;
-            color: #777;
-            font-size: 14px;
         }
     </style>
 </head>
-<body>
+<body ng-app="">
 
-<div class="container" ng-app="">
-    <p>Input your values:</p>
-    
-    <p>PRICE: <input type="number" ng-model="PRICE" placeholder="Enter price here"></p>
-    
-    <p>FREIGHT: <input type="number" ng-model="FRIGHT" placeholder="Enter fright here"></p>
-    
-    <p>TAX (%): <input type="number" ng-model="TAX" ng-init="TAX = 5" placeholder="Enter tax percentage here"></p>
+<div class="container">
+    <!-- Input Section -->
+    <div class="input-panel">
+        <div class="input-group">
+            <label>Price</label>
+            <input type="number" ng-model="PRICE" placeholder="Enter Base Price">
+        </div>
+        <div class="input-group">
+            <label>Freight</label>
+            <input type="number" ng-model="FRIGHT" placeholder="Enter Freight">
+        </div>
+        <div class="input-group">
+            <label>Tax (%)</label>
+            <input type="number" ng-model="TAX" ng-init="TAX = 5" placeholder="Enter Tax %">
+        </div>
 
-    <span ng-init="priceaftertax = 0" style="display:none;">
-        {{ priceaftertax = ((PRICE || 0) + (FRIGHT || 0)) * (1 + ((TAX || 0) / 100)) }}
-    </span>
+        <span ng-init="priceaftertax = 0" style="display:none;">
+            {{ priceaftertax = ((PRICE || 0) + (FRIGHT || 0)) * (1 + ((TAX || 0) / 100)) }}
+        </span>
+        <span ng-init="priceunsettax = 0" style="display:none;">
+            {{ priceunsettax = (PRICE || 0) + (FRIGHT || 0) }}
+        </span>
+    </div>
 
-    <span ng-init="priceunsettax = 0" style="display:none;">
-        {{ priceunsettax = (PRICE || 0) + (FRIGHT || 0) }}
-    </span>
+    <div class="summary-bar">
+        <span>SOYA RATE (WITH TAX): ₹{{ priceaftertax | number:2 }}</span>
+        <span>RICE RATE (NO TAX): ₹{{ priceunsettax | number:2 }}</span>
+    </div>
 
-    <h2>Price after Tax: {{ priceaftertax | number:2 }}</h2>
-    <h2>Price without Tax: {{ priceunsettax | number:2 }}</h2>
+    <!-- Actions -->
+    <div class="actions">
+        <button class="btn-share" onclick="generateAndShareImage()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+            Share Rate Card as Image
+        </button>
+    </div>
 
-    <button id="shareButton" onclick="shareTable()">Share on WhatsApp</button>
+    <!-- PREVIEW & EXPORT CARD CONTAINER -->
+    <div id="rateCard">
+        <div class="card-header">
+            <h1>SHRI SHYAM OILS</h1>
+            <div class="subtitle">Daily Price List</div>
+        </div>
 
-    <!-- Bulk Items Table -->
-    <h2>HK SOYA TIN</h2>
-    <table id="bulkItems">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>SOYA</th>
-                <th>RICE</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>15 KG</td>
-                <input type="hidden" ng-model="margin15kgtin" ng-init="margin15kgtin = 14.8">
-                <input type="hidden" ng-model="cost15kgtin" ng-init="cost15kgtin = 130">
-                <td>
-                    <span ng-if="(finalPrice = ((priceaftertax || 0) * (margin15kgtin || 0) + (cost15kgtin || 0)).toFixed(2)) != 100">
-                        {{ finalPrice }}
-                    </span>
-                </td>
-                <td>
-                    <span ng-if="(finalPriceNoTax = ((priceunsettax || 0) * (margin15kgtin || 0) + (cost15kgtin || 0)).toFixed(2)) != 100">
-                        {{ finalPriceNoTax }}
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>15 LTR</td>
-                <input type="hidden" ng-model="margin15ltrtin" ng-init="margin15ltrtin = 13.45">
-                <input type="hidden" ng-model="cost15ltrtin" ng-init="cost15ltrtin = 130">
-                <td>
-                    <span ng-if="(finalPrice1 = ((priceaftertax || 0) * (margin15ltrtin || 0) + (cost15ltrtin || 0)).toFixed(2)) != 100">
-                        {{ finalPrice1 }}
-                    </span>
-                </td>
-                <td>
-                    <span ng-if="(finalPrice1NoTax = ((priceunsettax || 0) * (margin15ltrtin || 0) + (cost15ltrtin || 0)).toFixed(2)) != 100">
-                        {{ finalPrice1NoTax }}
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Bulk Items Table -->
+        <div class="category-title">HK SOYA TIN</div>
+        <table id="bulkItems">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="price-col">SOYA</th>
+                    <th class="price-col">RICE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>15 KG</td>
+                    <input type="hidden" ng-model="margin15kgtin" ng-init="margin15kgtin = 14.8">
+                    <input type="hidden" ng-model="cost15kgtin" ng-init="cost15kgtin = 130">
+                    <td class="price-col">
+                        <span ng-if="(finalPrice = ((priceaftertax || 0) * (margin15kgtin || 0) + (cost15kgtin || 0)).toFixed(2)) != 100">
+                            {{ finalPrice }}
+                        </span>
+                    </td>
+                    <td class="price-col">
+                        <span ng-if="(finalPriceNoTax = ((priceunsettax || 0) * (margin15kgtin || 0) + (cost15kgtin || 0)).toFixed(2)) != 100">
+                            {{ finalPriceNoTax }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>15 LTR</td>
+                    <input type="hidden" ng-model="margin15ltrtin" ng-init="margin15ltrtin = 13.45">
+                    <input type="hidden" ng-model="cost15ltrtin" ng-init="cost15ltrtin = 130">
+                    <td class="price-col">
+                        <span ng-if="(finalPrice1 = ((priceaftertax || 0) * (margin15ltrtin || 0) + (cost15ltrtin || 0)).toFixed(2)) != 100">
+                            {{ finalPrice1 }}
+                        </span>
+                    </td>
+                    <td class="price-col">
+                        <span ng-if="(finalPrice1NoTax = ((priceunsettax || 0) * (margin15ltrtin || 0) + (cost15ltrtin || 0)).toFixed(2)) != 100">
+                            {{ finalPrice1NoTax }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <!-- Pouch Items Table -->
-    <h2>HK POUCH</h2>
-    <table id="pouchItems">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>SOYA</th>
-                <th>RICE</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>POUCH - 1 LTR</td>
-                <input type="hidden" ng-model="margin910gm" ng-init="margin910gm = 6.03">
-                <input type="hidden" ng-model="cost910gm" ng-init="cost910gm = 910">
-                <td>
-                    <span ng-if="(finalPrice999 = ((priceaftertax || 0) / 1000 * (cost910gm || 0) + (margin910gm || 0)).toFixed(2)) != 100">
-                        {{ finalPrice999 }}
-                    </span>
-                </td>
-                <td>
-                    <span ng-if="(finalPrice999NoTax = ((priceunsettax || 0) / 1000 * (cost910gm || 0) + (margin910gm || 0)).toFixed(2)) != 100">
-                        {{ finalPrice999NoTax }}
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>POUCH - 500 ML</td>
-                <td>
-                    <span ng-if="finalPrice999">
-                        {{ (((finalPrice999 * 1) + 2) / 2).toFixed(2) }}
-                    </span>
-                </td>
-                <td>
-                    <span ng-if="finalPrice999NoTax">
-                        {{ (((finalPrice999NoTax * 1) + 2) / 2).toFixed(2) }}
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Pouch Items Table -->
+        <div class="category-title">HK POUCH</div>
+        <table id="pouchItems">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="price-col">SOYA</th>
+                    <th class="price-col">RICE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>POUCH - 1 LTR</td>
+                    <input type="hidden" ng-model="margin910gm" ng-init="margin910gm = 6.03">
+                    <input type="hidden" ng-model="cost910gm" ng-init="cost910gm = 910">
+                    <td class="price-col">
+                        <span ng-if="(finalPrice999 = ((priceaftertax || 0) / 1000 * (cost910gm || 0) + (margin910gm || 0)).toFixed(2)) != 100">
+                            {{ finalPrice999 }}
+                        </span>
+                    </td>
+                    <td class="price-col">
+                        <span ng-if="(finalPrice999NoTax = ((priceunsettax || 0) / 1000 * (cost910gm || 0) + (margin910gm || 0)).toFixed(2)) != 100">
+                            {{ finalPrice999NoTax }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>POUCH - 500 ML</td>
+                    <td class="price-col">
+                        <span ng-if="finalPrice999">
+                            {{ (((finalPrice999 * 1) + 2) / 2).toFixed(2) }}
+                        </span>
+                    </td>
+                    <td class="price-col">
+                        <span ng-if="finalPrice999NoTax">
+                            {{ (((finalPrice999NoTax * 1) + 2) / 2).toFixed(2) }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <!-- Bottle Items Table -->
-    <h2>HK BOTTLE</h2>
-    <table id="bottleItems">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>SOYA</th>
-                <th>RICE</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>BOTTLE - 1 LTR</td>
-                <input type="hidden" ng-model="margin910gmBottle" ng-init="margin910gmBottle = 12.14">
-                <input type="hidden" ng-model="cost910gmBottle" ng-init="cost910gmBottle = 100">
-                <td>
-                    <span ng-if="(finalPrice3 = ((priceaftertax || 0) / 1000 * (cost910gm || 0) + 6.10 + (margin910gm || 0)).toFixed(2)) != 100">
-                        {{ finalPrice3 }}
-                    </span>
-                </td>
-                <td>
-                    <span ng-if="(finalPrice3NoTax = ((priceunsettax || 0) / 1000 * (cost910gm || 0) + 6.10 + (margin910gm || 0)).toFixed(2)) != 100">
-                        {{ finalPrice3NoTax }}
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>BOTTLE - 500 ML</td>
-                <td>
-                    <span ng-if="finalPrice3">
-                        {{ ((finalPrice3 * 1) + 3).toFixed(2) }}
-                    </span>
-                </td>
-                <td>
-                    <span ng-if="finalPrice3NoTax">
-                        {{ ((finalPrice3NoTax * 1) + 3).toFixed(2) }}
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Bottle Items Table -->
+        <div class="category-title">HK BOTTLE</div>
+        <table id="bottleItems">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="price-col">SOYA</th>
+                    <th class="price-col">RICE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>BOTTLE - 1 LTR</td>
+                    <input type="hidden" ng-model="margin910gmBottle" ng-init="margin910gmBottle = 12.14">
+                    <input type="hidden" ng-model="cost910gmBottle" ng-init="cost910gmBottle = 100">
+                    <td class="price-col">
+                        <span ng-if="(finalPrice3 = ((priceaftertax || 0) / 1000 * (cost910gm || 0) + 6.10 + (margin910gm || 0)).toFixed(2)) != 100">
+                            {{ finalPrice3 }}
+                        </span>
+                    </td>
+                    <td class="price-col">
+                        <span ng-if="(finalPrice3NoTax = ((priceunsettax || 0) / 1000 * (cost910gm || 0) + 6.10 + (margin910gm || 0)).toFixed(2)) != 100">
+                            {{ finalPrice3NoTax }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>BOTTLE - 500 ML</td>
+                    <td class="price-col">
+                        <span ng-if="finalPrice3">
+                            {{ ((finalPrice3 * 1) + 3).toFixed(2) }}
+                        </span>
+                    </td>
+                    <td class="price-col">
+                        <span ng-if="finalPrice3NoTax">
+                            {{ ((finalPrice3NoTax * 1) + 3).toFixed(2) }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <!-- Jar Items Table -->
-    <h2>HK JAR</h2>
-    <table id="jarItems">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>SOYA</th>
-                <th>RICE</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>JAR - 5 LTR</td>
-                <td>
-                    <span ng-if="finalPrice3">
-                        {{ (finalPrice3 * 5 + 25) | number:2 }}
-                    </span>
-                </td>
-                <td>
-                    <span ng-if="finalPrice3NoTax">
-                        {{ (finalPrice3NoTax * 5 + 25) | number:2 }}
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td>JAR - 4 KG</td>
-                <td>
-                    <span ng-if="finalPrice4">
-                        {{ (finalPrice4 * 5 + 25) | number:2 }}
-                    </span>
-                </td>
-                <td>
-                    <span ng-if="finalPrice4NoTax">
-                        {{ (finalPrice4NoTax * 5 + 25) | number:2 }}
-                    </span>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <!-- Jar Items Table -->
+        <div class="category-title">HK JAR</div>
+        <table id="jarItems">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="price-col">SOYA</th>
+                    <th class="price-col">RICE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>JAR - 5 LTR</td>
+                    <td class="price-col">
+                        <span ng-if="finalPrice3">
+                            {{ (finalPrice3 * 5 + 25) | number:2 }}
+                        </span>
+                    </td>
+                    <td class="price-col">
+                        <span ng-if="finalPrice3NoTax">
+                            {{ (finalPrice3NoTax * 5 + 25) | number:2 }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>JAR - 4 KG</td>
+                    <td class="price-col">
+                        <span ng-if="finalPrice4">
+                            {{ (finalPrice4 * 5 + 25) | number:2 }}
+                        </span>
+                    </td>
+                    <td class="price-col">
+                        <span ng-if="finalPrice4NoTax">
+                            {{ (finalPrice4NoTax * 5 + 25) | number:2 }}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <div class="footer"></div>
+        <div class="card-footer">
+            Rates subject to change without prior notice. Generated on Shri Shyam Oils Calculator.
+        </div>
+    </div>
 </div>
 
 <script>
-    function shareTable() {
-        let message = '*SHRI SHYAM OILS*\n';
+    async function generateAndShareImage() {
+        const cardElement = document.getElementById('rateCard');
+        
+        try {
+            const canvas = await html2canvas(cardElement, {
+                scale: 2, // High resolution
+                backgroundColor: '#ffffff'
+            });
 
-        message += '*HK SOYA TIN:*\n';
-        const bulkItems = document.querySelectorAll('#bulkItems tbody tr');
-        bulkItems.forEach(item => {
-            const columns = item.querySelectorAll('td');
-            const itemName = columns[0].innerText;
-            const soyaPrice = columns[1].innerText.trim();
-            const ricePrice = columns[2].innerText.trim();
-            message += `${itemName} -> SOYA: ${soyaPrice} | RICE: ${ricePrice}\n`;
-        });
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'shri_shyam_oils_rate_card.png', { type: 'image/png' });
 
-        message += '\n*HK POUCH*:\n';
-        const pouchItems = document.querySelectorAll('#pouchItems tbody tr');
-        pouchItems.forEach(item => {
-            const columns = item.querySelectorAll('td');
-            const itemName = columns[0].innerText;
-            const soyaPrice = columns[1].innerText.trim();
-            const ricePrice = columns[2].innerText.trim();
-            message += `${itemName} -> SOYA: ${soyaPrice} | RICE: ${ricePrice}\n`;
-        });
+                // Check if browser supports Web Share API with files
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            title: 'SHRI SHYAM OILS - Rate Card',
+                            text: 'Please find the latest SOYA and RICE rates attached.',
+                            files: [file]
+                        });
+                    } catch (err) {
+                        if (err.name !== 'AbortError') {
+                            downloadFallback(canvas);
+                        }
+                    }
+                } else {
+                    // Fallback for desktop / unsupported browsers: direct download
+                    downloadFallback(canvas);
+                }
+            }, 'image/png');
+        } catch (error) {
+            console.error('Error generating image card:', error);
+            alert('Could not generate image. Please try again.');
+        }
+    }
 
-        message += '\n*HK BOTTLE*:\n';
-        const bottleItems = document.querySelectorAll('#bottleItems tbody tr');
-        bottleItems.forEach(item => {
-            const columns = item.querySelectorAll('td');
-            const itemName = columns[0].innerText;
-            const soyaPrice = columns[1].innerText.trim();
-            const ricePrice = columns[2].innerText.trim();
-            message += `${itemName} -> SOYA: ${soyaPrice} | RICE: ${ricePrice}\n`;
-        });
-
-        message += '\n*HK JAR Items*:\n';
-        const jarItems = document.querySelectorAll('#jarItems tbody tr');
-        jarItems.forEach(item => {
-            const columns = item.querySelectorAll('td');
-            const itemName = columns[0].innerText;
-            const soyaPrice = columns[1].innerText.trim();
-            const ricePrice = columns[2].innerText.trim();
-            message += `${itemName} -> SOYA: ${soyaPrice} | RICE: ${ricePrice}\n`;
-        });
-
-        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl);
+    function downloadFallback(canvas) {
+        const link = document.createElement('a');
+        link.download = 'shri_shyam_oils_rate_card.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        alert('Rate card image downloaded! You can attach and send it directly on WhatsApp.');
     }
 </script>
 
