@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Calculator - Shri Shyam Oils</title>
+    <title>Price Calculator - Shree Shyam Oils</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -30,9 +30,9 @@
             background-color: #f9fbfb;
             border-bottom: 2px solid #e2e8f0;
         }
-        .grid-3 {
+        .grid-4 {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
         }
         .input-group label {
@@ -108,12 +108,21 @@
             letter-spacing: 1px;
             font-weight: 800;
         }
-        .card-header .subtitle {
-            margin: 4px 0 0 0;
-            font-size: 12px;
-            color: #718096;
-            font-weight: 600;
+        .card-header .brand-title {
+            margin: 4px 0 2px 0;
+            font-size: 16px;
+            color: #c53030;
+            font-weight: 700;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
+        }
+        .card-header .date-display {
+            margin: 4px 0 0 0;
+            font-size: 13px;
+            color: #4a5568;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         .category-title {
             font-size: 14px;
@@ -178,12 +187,16 @@
         }
     </style>
 </head>
-<body ng-app="">
+<body ng-app="calcApp" ng-controller="calcCtrl">
 
 <div class="container">
     <!-- Base Parameters -->
     <div class="input-panel">
-        <div class="grid-3">
+        <div class="grid-4">
+            <div class="input-group">
+                <label>Date</label>
+                <input type="text" ng-model="customDate" placeholder="DD/MMM/YYYY">
+            </div>
             <div class="input-group">
                 <label>Price</label>
                 <input type="number" ng-model="PRICE" placeholder="Enter Price">
@@ -194,7 +207,7 @@
             </div>
             <div class="input-group">
                 <label>Tax (%)</label>
-                <input type="number" ng-model="TAX" ng-init="TAX = 5" placeholder="Enter Tax %">
+                <input type="number" ng-model="TAX" placeholder="Enter Tax %">
             </div>
         </div>
 
@@ -222,8 +235,9 @@
     <!-- RATE CARD (CONTAINER TO BE CONVERTED TO IMAGE) -->
     <div id="rateCard">
         <div class="card-header">
-            <h1>SHRI SHYAM OILS</h1>
-            <div class="subtitle">Daily Price List</div>
+            <h1>SHREE SHYAM OILS</h1>
+            <div class="brand-title">HARI KESARI</div>
+            <div class="date-display">{{ customDate }}</div>
         </div>
 
         <!-- Bulk Items Table -->
@@ -403,12 +417,26 @@
         </table>
 
         <div class="card-footer">
-            Rates subject to change without prior notice. Generated on Shri Shyam Oils Calculator.
+            Rates subject to change without prior notice. Generated on Shree Shyam Oils Calculator.
         </div>
     </div>
 </div>
 
 <script>
+    const app = angular.module('calcApp', []);
+    app.controller('calcCtrl', function($scope) {
+        $scope.TAX = 5;
+
+        // Auto-generate current date in DD/MMM/YYYY format
+        const today = new Date();
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = months[today.getMonth()];
+        const year = today.getFullYear();
+        
+        $scope.customDate = `${day}/${month}/${year}`;
+    });
+
     async function generateAndShareImage() {
         const cardElement = document.getElementById('rateCard');
         
@@ -420,12 +448,12 @@
             });
 
             canvas.toBlob(async (blob) => {
-                const file = new File([blob], 'shri_shyam_oils_rate_card.png', { type: 'image/png' });
+                const file = new File([blob], 'shree_shyam_oils_rate_card.png', { type: 'image/png' });
 
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     try {
                         await navigator.share({
-                            title: 'SHRI SHYAM OILS - Rate Card',
+                            title: 'SHREE SHYAM OILS - HARI KESARI',
                             text: 'Please find our latest rates attached.',
                             files: [file]
                         });
@@ -446,7 +474,7 @@
 
     function downloadFallback(canvas) {
         const link = document.createElement('a');
-        link.download = 'shri_shyam_oils_rate_card.png';
+        link.download = 'shree_shyam_oils_rate_card.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
         alert('Rate card image downloaded! You can attach and send it directly on WhatsApp.');
