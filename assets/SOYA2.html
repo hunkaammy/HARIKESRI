@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Price Calculator - Shri Shyam Oils</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-    <!-- html2canvas for converting the formatted card to image -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
@@ -18,7 +17,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 720px;
+            max-width: 850px;
             margin: 0 auto; 
             background: #ffffff; 
             border-radius: 12px; 
@@ -31,8 +30,10 @@
             background-color: #f9fbfb;
             border-bottom: 2px solid #e2e8f0;
         }
-        .input-group {
-            margin-bottom: 12px;
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
         }
         .input-group label {
             display: block;
@@ -49,7 +50,6 @@
             border-radius: 6px;
             font-size: 15px;
             outline: none;
-            transition: border-color 0.2s;
         }
         .input-group input:focus {
             border-color: #2b6cb0;
@@ -67,7 +67,6 @@
         .actions {
             padding: 15px 20px;
             display: flex;
-            gap: 12px;
             justify-content: center;
             background: #fff;
         }
@@ -91,7 +90,7 @@
             background-color: #1eb956; 
         }
 
-        /* --- STYLED RATE CARD AREA (CONVERTED TO IMAGE) --- */
+        /* RATE CARD AREA */
         #rateCard {
             padding: 24px;
             background: #ffffff;
@@ -146,7 +145,7 @@
         }
         th.price-col, td.price-col {
             text-align: right;
-            width: 25%;
+            width: 35%;
         }
         td.price-col {
             font-weight: 600;
@@ -155,6 +154,20 @@
         tr:nth-child(even) {
             background-color: #f8fafc; 
         }
+
+        /* INLINE ROW INPUTS */
+        .sum-input {
+            width: 70px;
+            padding: 4px 6px;
+            margin-right: 8px;
+            border: 1px solid #f6ad55;
+            background-color: #fffaf0;
+            border-radius: 4px;
+            font-size: 13px;
+            text-align: right;
+            font-weight: normal;
+        }
+
         .card-footer {
             margin-top: 15px;
             border-top: 1px dashed #cbd5e1;
@@ -168,19 +181,21 @@
 <body ng-app="">
 
 <div class="container">
-    <!-- Input Section -->
+    <!-- Base Parameters -->
     <div class="input-panel">
-        <div class="input-group">
-            <label>Price</label>
-            <input type="number" ng-model="PRICE" placeholder="Enter Base Price">
-        </div>
-        <div class="input-group">
-            <label>Freight</label>
-            <input type="number" ng-model="FRIGHT" placeholder="Enter Freight">
-        </div>
-        <div class="input-group">
-            <label>Tax (%)</label>
-            <input type="number" ng-model="TAX" ng-init="TAX = 5" placeholder="Enter Tax %">
+        <div class="grid-3">
+            <div class="input-group">
+                <label>Price</label>
+                <input type="number" ng-model="PRICE" placeholder="Enter Price">
+            </div>
+            <div class="input-group">
+                <label>Freight</label>
+                <input type="number" ng-model="FRIGHT" placeholder="Enter Freight">
+            </div>
+            <div class="input-group">
+                <label>Tax (%)</label>
+                <input type="number" ng-model="TAX" ng-init="TAX = 5" placeholder="Enter Tax %">
+            </div>
         </div>
 
         <span ng-init="priceaftertax = 0" style="display:none;">
@@ -192,8 +207,8 @@
     </div>
 
     <div class="summary-bar">
-        <span>SOYA RATE (WITH TAX): ₹{{ priceaftertax | number:2 }}</span>
-        <span>RICE RATE (NO TAX): ₹{{ priceunsettax | number:2 }}</span>
+        <span>SOYA BASE RATE: ₹{{ priceaftertax | number:2 }}</span>
+        <span>RICE BASE RATE: ₹{{ priceunsettax | number:2 }}</span>
     </div>
 
     <!-- Actions -->
@@ -204,7 +219,7 @@
         </button>
     </div>
 
-    <!-- PREVIEW & EXPORT CARD CONTAINER -->
+    <!-- RATE CARD (CONTAINER TO BE CONVERTED TO IMAGE) -->
     <div id="rateCard">
         <div class="card-header">
             <h1>SHRI SHYAM OILS</h1>
@@ -224,31 +239,31 @@
             <tbody>
                 <tr>
                     <td>15 KG</td>
-                    <input type="hidden" ng-model="margin15kgtin" ng-init="margin15kgtin = 14.8">
-                    <input type="hidden" ng-model="cost15kgtin" ng-init="cost15kgtin = 130">
                     <td class="price-col">
-                        <span ng-if="(finalPrice = ((priceaftertax || 0) * (margin15kgtin || 0) + (cost15kgtin || 0)).toFixed(2)) != 100">
-                            {{ finalPrice }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_soya_15kg" placeholder="+0">
+                        <span ng-if="priceaftertax">
+                            {{ (((priceaftertax * 14.8 + 130) + (add_soya_15kg || 0))).toFixed(2) }}
                         </span>
                     </td>
                     <td class="price-col">
-                        <span ng-if="(finalPriceNoTax = ((priceunsettax || 0) * (margin15kgtin || 0) + (cost15kgtin || 0)).toFixed(2)) != 100">
-                            {{ finalPriceNoTax }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_rice_15kg" placeholder="+0">
+                        <span ng-if="priceunsettax">
+                            {{ (((priceunsettax * 14.8 + 130) + (add_rice_15kg || 0))).toFixed(2) }}
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td>15 LTR</td>
-                    <input type="hidden" ng-model="margin15ltrtin" ng-init="margin15ltrtin = 13.45">
-                    <input type="hidden" ng-model="cost15ltrtin" ng-init="cost15ltrtin = 130">
                     <td class="price-col">
-                        <span ng-if="(finalPrice1 = ((priceaftertax || 0) * (margin15ltrtin || 0) + (cost15ltrtin || 0)).toFixed(2)) != 100">
-                            {{ finalPrice1 }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_soya_15ltr" placeholder="+0">
+                        <span ng-if="priceaftertax">
+                            {{ (((priceaftertax * 13.45 + 130) + (add_soya_15ltr || 0))).toFixed(2) }}
                         </span>
                     </td>
                     <td class="price-col">
-                        <span ng-if="(finalPrice1NoTax = ((priceunsettax || 0) * (margin15ltrtin || 0) + (cost15ltrtin || 0)).toFixed(2)) != 100">
-                            {{ finalPrice1NoTax }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_rice_15ltr" placeholder="+0">
+                        <span ng-if="priceunsettax">
+                            {{ (((priceunsettax * 13.45 + 130) + (add_rice_15ltr || 0))).toFixed(2) }}
                         </span>
                     </td>
                 </tr>
@@ -268,29 +283,31 @@
             <tbody>
                 <tr>
                     <td>POUCH - 1 LTR</td>
-                    <input type="hidden" ng-model="margin910gm" ng-init="margin910gm = 6.03">
-                    <input type="hidden" ng-model="cost910gm" ng-init="cost910gm = 910">
                     <td class="price-col">
-                        <span ng-if="(finalPrice999 = ((priceaftertax || 0) / 1000 * (cost910gm || 0) + (margin910gm || 0)).toFixed(2)) != 100">
-                            {{ finalPrice999 }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_soya_pouch1" placeholder="+0">
+                        <span ng-if="priceaftertax">
+                            {{ (((priceaftertax / 1000 * 910 + 6.03) + (add_soya_pouch1 || 0))).toFixed(2) }}
                         </span>
                     </td>
                     <td class="price-col">
-                        <span ng-if="(finalPrice999NoTax = ((priceunsettax || 0) / 1000 * (cost910gm || 0) + (margin910gm || 0)).toFixed(2)) != 100">
-                            {{ finalPrice999NoTax }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_rice_pouch1" placeholder="+0">
+                        <span ng-if="priceunsettax">
+                            {{ (((priceunsettax / 1000 * 910 + 6.03) + (add_rice_pouch1 || 0))).toFixed(2) }}
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td>POUCH - 500 ML</td>
                     <td class="price-col">
-                        <span ng-if="finalPrice999">
-                            {{ (((finalPrice999 * 1) + 2) / 2).toFixed(2) }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_soya_pouch500" placeholder="+0">
+                        <span ng-if="priceaftertax">
+                            {{ ((((priceaftertax / 1000 * 910 + 6.03 + 2) / 2) + (add_soya_pouch500 || 0))).toFixed(2) }}
                         </span>
                     </td>
                     <td class="price-col">
-                        <span ng-if="finalPrice999NoTax">
-                            {{ (((finalPrice999NoTax * 1) + 2) / 2).toFixed(2) }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_rice_pouch500" placeholder="+0">
+                        <span ng-if="priceunsettax">
+                            {{ ((((priceunsettax / 1000 * 910 + 6.03 + 2) / 2) + (add_rice_pouch500 || 0))).toFixed(2) }}
                         </span>
                     </td>
                 </tr>
@@ -310,29 +327,31 @@
             <tbody>
                 <tr>
                     <td>BOTTLE - 1 LTR</td>
-                    <input type="hidden" ng-model="margin910gmBottle" ng-init="margin910gmBottle = 12.14">
-                    <input type="hidden" ng-model="cost910gmBottle" ng-init="cost910gmBottle = 100">
                     <td class="price-col">
-                        <span ng-if="(finalPrice3 = ((priceaftertax || 0) / 1000 * (cost910gm || 0) + 6.10 + (margin910gm || 0)).toFixed(2)) != 100">
-                            {{ finalPrice3 }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_soya_bot1" placeholder="+0">
+                        <span ng-if="priceaftertax">
+                            {{ (((priceaftertax / 1000 * 910 + 6.10 + 12.14) + (add_soya_bot1 || 0))).toFixed(2) }}
                         </span>
                     </td>
                     <td class="price-col">
-                        <span ng-if="(finalPrice3NoTax = ((priceunsettax || 0) / 1000 * (cost910gm || 0) + 6.10 + (margin910gm || 0)).toFixed(2)) != 100">
-                            {{ finalPrice3NoTax }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_rice_bot1" placeholder="+0">
+                        <span ng-if="priceunsettax">
+                            {{ (((priceunsettax / 1000 * 910 + 6.10 + 12.14) + (add_rice_bot1 || 0))).toFixed(2) }}
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td>BOTTLE - 500 ML</td>
                     <td class="price-col">
-                        <span ng-if="finalPrice3">
-                            {{ ((finalPrice3 * 1) + 3).toFixed(2) }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_soya_bot500" placeholder="+0">
+                        <span ng-if="priceaftertax">
+                            {{ (((priceaftertax / 1000 * 910 + 6.10 + 12.14 + 3) + (add_soya_bot500 || 0))).toFixed(2) }}
                         </span>
                     </td>
                     <td class="price-col">
-                        <span ng-if="finalPrice3NoTax">
-                            {{ ((finalPrice3NoTax * 1) + 3).toFixed(2) }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_rice_bot500" placeholder="+0">
+                        <span ng-if="priceunsettax">
+                            {{ (((priceunsettax / 1000 * 910 + 6.10 + 12.14 + 3) + (add_rice_bot500 || 0))).toFixed(2) }}
                         </span>
                     </td>
                 </tr>
@@ -353,26 +372,30 @@
                 <tr>
                     <td>JAR - 5 LTR</td>
                     <td class="price-col">
-                        <span ng-if="finalPrice3">
-                            {{ (finalPrice3 * 5 + 25) | number:2 }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_soya_jar5" placeholder="+0">
+                        <span ng-if="priceaftertax">
+                            {{ ((((priceaftertax / 1000 * 910 + 6.10 + 12.14) * 5 + 25) + (add_soya_jar5 || 0))).toFixed(2) }}
                         </span>
                     </td>
                     <td class="price-col">
-                        <span ng-if="finalPrice3NoTax">
-                            {{ (finalPrice3NoTax * 5 + 25) | number:2 }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_rice_jar5" placeholder="+0">
+                        <span ng-if="priceunsettax">
+                            {{ ((((priceunsettax / 1000 * 910 + 6.10 + 12.14) * 5 + 25) + (add_rice_jar5 || 0))).toFixed(2) }}
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <td>JAR - 4 KG</td>
                     <td class="price-col">
-                        <span ng-if="finalPrice4">
-                            {{ (finalPrice4 * 5 + 25) | number:2 }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_soya_jar4" placeholder="+0">
+                        <span ng-if="priceaftertax">
+                            {{ ((((priceaftertax / 1000 * 840 + 13.00) * 5 + 25) + (add_soya_jar4 || 0))).toFixed(2) }}
                         </span>
                     </td>
                     <td class="price-col">
-                        <span ng-if="finalPrice4NoTax">
-                            {{ (finalPrice4NoTax * 5 + 25) | number:2 }}
+                        <input type="number" class="sum-input" data-html2canvas-ignore="true" ng-model="add_rice_jar4" placeholder="+0">
+                        <span ng-if="priceunsettax">
+                            {{ ((((priceunsettax / 1000 * 840 + 13.00) * 5 + 25) + (add_rice_jar4 || 0))).toFixed(2) }}
                         </span>
                     </td>
                 </tr>
@@ -391,19 +414,19 @@
         
         try {
             const canvas = await html2canvas(cardElement, {
-                scale: 2, // High resolution
-                backgroundColor: '#ffffff'
+                scale: 2,
+                backgroundColor: '#ffffff',
+                ignoreElements: (element) => element.getAttribute('data-html2canvas-ignore') === 'true'
             });
 
             canvas.toBlob(async (blob) => {
                 const file = new File([blob], 'shri_shyam_oils_rate_card.png', { type: 'image/png' });
 
-                // Check if browser supports Web Share API with files
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     try {
                         await navigator.share({
                             title: 'SHRI SHYAM OILS - Rate Card',
-                            text: 'Please find the latest SOYA and RICE rates attached.',
+                            text: 'Please find our latest rates attached.',
                             files: [file]
                         });
                     } catch (err) {
@@ -412,7 +435,6 @@
                         }
                     }
                 } else {
-                    // Fallback for desktop / unsupported browsers: direct download
                     downloadFallback(canvas);
                 }
             }, 'image/png');
