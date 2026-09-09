@@ -218,7 +218,7 @@
                 <input type="number" ng-model="RICE_PRICE" placeholder="Enter Rice Price">
             </div>
             <div class="input-group">
-                <label>Freight</label>
+                <label>Freight (Soya)</label>
                 <input type="number" ng-model="FRIGHT" placeholder="Enter Freight">
             </div>
             <div class="input-group">
@@ -237,13 +237,13 @@
             {{ priceaftertax = ((PRICE || 0) + (FRIGHT || 0)) * (1 + ((TAX || 0) / 100)) }}
         </span>
         <span ng-init="priceunsettax = 0" style="display:none;">
-            {{ priceunsettax = (RICE_PRICE || 0) + (FRIGHT || 0) }}
+            {{ priceunsettax = (RICE_PRICE || 0) }}
         </span>
     </div>
 
     <div class="summary-bar">
-        <span>SOYA BASE RATE (INC. TAX): ₹{{ priceaftertax | number:2 }}</span>
-        <span>RICE BASE RATE (NO TAX): ₹{{ priceunsettax | number:2 }}</span>
+        <span>SOYA BASE RATE (INC. FREIGHT & TAX): ₹{{ priceaftertax | number:2 }}</span>
+        <span>RICE BASE RATE (EXCL. FREIGHT & TAX): ₹{{ priceunsettax | number:2 }}</span>
     </div>
 
     <!-- Actions -->
