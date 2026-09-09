@@ -17,7 +17,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 850px;
+            max-width: 900px;
             margin: 0 auto; 
             background: #ffffff; 
             border-radius: 12px; 
@@ -30,10 +30,18 @@
             background-color: #f9fbfb;
             border-bottom: 2px solid #e2e8f0;
         }
-        .grid-4 {
+        .grid-5 {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 12px;
+        }
+        .full-row {
+            margin-top: 12px;
+        }
+        @media (max-width: 768px) {
+            .grid-5 {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         .input-group label {
             display: block;
@@ -181,9 +189,13 @@
             margin-top: 15px;
             border-top: 1px dashed #cbd5e1;
             padding-top: 10px;
-            font-size: 11px;
-            color: #a0aec0;
+            font-size: 12px;
+            color: #4a5568;
             text-align: center;
+            font-weight: 500;
+        }
+        .card-footer strong {
+            color: #2d3748;
         }
     </style>
 </head>
@@ -192,36 +204,46 @@
 <div class="container">
     <!-- Base Parameters -->
     <div class="input-panel">
-        <div class="grid-4">
+        <div class="grid-5">
             <div class="input-group">
                 <label>Date</label>
                 <input type="text" ng-model="customDate" placeholder="DD/MMM/YYYY">
             </div>
             <div class="input-group">
-                <label>Price</label>
-                <input type="number" ng-model="PRICE" placeholder="Enter Price">
+                <label>Soya Price</label>
+                <input type="number" ng-model="PRICE" placeholder="Enter Soya Price">
+            </div>
+            <div class="input-group">
+                <label>Rice Price</label>
+                <input type="number" ng-model="RICE_PRICE" placeholder="Enter Rice Price">
             </div>
             <div class="input-group">
                 <label>Freight</label>
                 <input type="number" ng-model="FRIGHT" placeholder="Enter Freight">
             </div>
             <div class="input-group">
-                <label>Tax (%)</label>
+                <label>Soya Tax (%)</label>
                 <input type="number" ng-model="TAX" placeholder="Enter Tax %">
             </div>
+        </div>
+
+        <!-- Custom Condition Input Field -->
+        <div class="input-group full-row">
+            <label>Condition / Terms (Shown in Card Footer)</label>
+            <input type="text" ng-model="conditionText" placeholder="Enter custom terms or condition here...">
         </div>
 
         <span ng-init="priceaftertax = 0" style="display:none;">
             {{ priceaftertax = ((PRICE || 0) + (FRIGHT || 0)) * (1 + ((TAX || 0) / 100)) }}
         </span>
         <span ng-init="priceunsettax = 0" style="display:none;">
-            {{ priceunsettax = (PRICE || 0) + (FRIGHT || 0) }}
+            {{ priceunsettax = (RICE_PRICE || 0) + (FRIGHT || 0) }}
         </span>
     </div>
 
     <div class="summary-bar">
-        <span>SOYA BASE RATE: ₹{{ priceaftertax | number:2 }}</span>
-        <span>RICE BASE RATE: ₹{{ priceunsettax | number:2 }}</span>
+        <span>SOYA BASE RATE (INC. TAX): ₹{{ priceaftertax | number:2 }}</span>
+        <span>RICE BASE RATE (NO TAX): ₹{{ priceunsettax | number:2 }}</span>
     </div>
 
     <!-- Actions -->
@@ -241,7 +263,7 @@
         </div>
 
         <!-- Bulk Items Table -->
-        <div class="category-title">HK SOYA TIN</div>
+        <div class="category-title">HK BULK PACK</div>
         <table id="bulkItems">
             <thead>
                 <tr>
@@ -416,8 +438,9 @@
             </tbody>
         </table>
 
-        <div class="card-footer">
-            Rates subject to change without prior notice. Generated on Shree Shyam Oils Calculator.
+        <!-- Dynamic Condition Footer -->
+        <div class="card-footer" ng-if="conditionText">
+            <strong>CONDITION:</strong> {{ conditionText }}
         </div>
     </div>
 </div>
@@ -426,6 +449,7 @@
     const app = angular.module('calcApp', []);
     app.controller('calcCtrl', function($scope) {
         $scope.TAX = 5;
+        $scope.conditionText = "Payment within 7 days. Rates subject to change without prior notice.";
 
         // Auto-generate current date in DD/MMM/YYYY format
         const today = new Date();
